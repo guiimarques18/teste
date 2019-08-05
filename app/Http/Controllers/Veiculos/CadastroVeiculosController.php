@@ -24,13 +24,11 @@ class CadastroVeiculosController extends Controller {
      *
      * @return \Illuminate\View\View
      */
-    public function index(Request $request) {
+    public function index(Request $request, CadastroVeiculo $cadastroVeiculo) {
         /**
          * Verifica se o usuario tem permissao para acessar
          */
-        // $this->authorize('view', $cadastrop);
-
-        // echo "oi";
+        $this->authorize('view', $cadastroVeiculo);
 
         $keyword = $request->get('search');
         $perPage = 15;
@@ -56,16 +54,17 @@ class CadastroVeiculosController extends Controller {
             
         return view('veiculos.cadastro-veiculo.index', compact('cadastroveiculos'));
     }
-/**
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\View\View
      */
-    public function create() {
+    public function create(CadastroVeiculo $cadastroVeiculo) {
         /**
-         * Verifica se o usu�rio tem permiss�o para acessar
+         * Verifica se o usuario tem permissao para acessar
          */
-        // $this->authorize('create', $cadastrop);
+        $this->authorize('create', $cadastroVeiculo);
 
         return view('veiculos.cadastro-veiculo.create');
     }
@@ -122,11 +121,11 @@ class CadastroVeiculosController extends Controller {
      *
      * @return \Illuminate\View\View
      */
-    public function edit($id) {
+    public function edit($id, CadastroVeiculo $cadastroVeiculo) {
         /**
          * Verifica se o usuario tem permissao para acessar
          */
-        // $this->authorize('edit', $cadastrop);
+        $this->authorize('edit', $cadastroVeiculo);
 
         $cadastroveiculo = CadastroVeiculo::select('*')
                 ->findOrFail($id);
@@ -178,18 +177,23 @@ class CadastroVeiculosController extends Controller {
      *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      */
-    public function destroy($id) {
+    public function destroy($id, CadastroVeiculo $cadastroVeiculo) {
         /**
          * Verifica se o usuario tem permissao para acessar
          */
-        // $this->authorize('delete', $cadastrop);
+        $this->authorize('delete', $cadastroVeiculo);
         
         if(CadastroVeiculo::destroy($id)) {
-            Session::flash('flash_message', 'Veículo Excluído!');
+            Session::flash('message', 'Veículo excluído com sucesso!');
+            Session::flash('alert-class', 'alert-success');
+
             return redirect('veiculo')->with('status', 'Processo #'.$id.' excluído.');
         } else {
+            Session::flash('message', 'Erro ao excluir veículo: ' . $e);
+            Session::flash('alert-class', 'alert-danger');
+
             return redirect('veiculo')
-                            ->withErrors("Falha na exclus&atilde;o!");
+                ->withErrors("Falha na exclus&atilde;o!");
         }
     }
 

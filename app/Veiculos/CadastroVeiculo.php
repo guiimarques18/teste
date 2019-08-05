@@ -44,10 +44,3 @@ class CadastroVeiculo extends Model
     ];
     
 }
-
-/**
- * validator no model
- * criar policies
- * verificar a exibicao de flash message nas paginas
- * envio de e-mail com event notification
- */

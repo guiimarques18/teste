@@ -5,6 +5,9 @@ namespace FederalSt\Providers;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
+use FederalSt\Veiculos\CadastroVeiculo;
+use FederalSt\Policies\CadastroVeiculoPolicy;
+
 class AuthServiceProvider extends ServiceProvider
 {
     /**
@@ -14,6 +17,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'FederalSt\Model' => 'FederalSt\Policies\ModelPolicy',
+        CadastroVeiculo::class => CadastroVeiculoPolicy::class,
     ];
 
     /**

@@ -38,8 +38,10 @@
                             <table class="table table-hover table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Placa</th><th>Renavam</th><th>Modelo</th><th>Marca</th><th>Ano</th><th>Proprietário</th>
+                                        <th>Placa</th><th>Renavam</th><th>Modelo</th><th>Marca</th><th>Ano</th><th>Proprietário</th><th>Atualização</th>
+                                        @if (Auth::user()->role == 2)
                                         <th colspan="2"></th>
+                                        @endif
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -52,9 +54,11 @@
                                         <td>{{ $item->ano }}</td>
                                         <td>{{ $item->proprietario }}</td>
                                         <td>{{ date("d/m/Y H:i:s", strtotime($item->updated_at)) }}</td>    
+                                        @if (Auth::user()->role == 2)
                                         <td>
                                             <!-- <a href="{{ url('/processo_seletivo/cadastro-ps/' . $item->id) }}" title="View CadastroP"><button class="btn btn-info btn-xs"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i> Visualizar</button></a> -->
                                             <a href="{{ url('/veiculo/' . $item->id . '/edit') }}" title="Edit CadastroP"><button class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i> Editar</button></a>
+                                            
                                             {!! Form::open([
                                                 'method'=>'DELETE',
                                                 'url' => ['/veiculo', $item->id],
@@ -68,6 +72,7 @@
                                                 )) !!}
                                             {!! Form::close() !!}
                                         </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                                 </tbody>
