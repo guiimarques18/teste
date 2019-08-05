@@ -10,6 +10,7 @@ use FederalSt\Notifications\TemplateEmail;
 use Illuminate\Http\Request;
 use Session;
 use Validator;
+use Auth;
 
 
 class CadastroVeiculosController extends Controller {
@@ -36,21 +37,30 @@ class CadastroVeiculosController extends Controller {
         $keyword = $request->get('search');
         $perPage = 15;
 
-        if (!empty($keyword)) {
+        if (!empty($keyword) && Auth::user()->role == 2) {
             $cadastroveiculos = CadastroVeiculo::where('placa', 'ILIKE', "%$keyword%")
-                    ->orWhere('renavam', '=', "$keyword")
+                    // ->orWhere('renavam', '=', "$keyword")
                     ->orWhere('modelo', 'ILIKE', "%$keyword%")
                     ->orWhere('marca', 'ILIKE', "%$keyword%")
-                    ->orWhere('ano', '=', "$keyword")
+                    // ->orWhere('ano', '=', "$keyword")
                     ->orWhere('proprietario', 'ILIKE', "%$keyword%")
                     ->orderby('marca', 'desc')
                     ->orderby('modelo', 'desc')
                     ->paginate($perPage);
         } else {
-            $cadastroveiculos = CadastroVeiculo::orderby('marca', 'desc')
-                    ->orderby('modelo', 'desc')
-                    ->paginate($perPage);
+            if (Auth::user()->role == 2) {
+                $cadastroveiculos = CadastroVeiculo::orderby('marca', 'desc')
+                        ->orderby('modelo', 'desc')
+                        ->paginate($perPage);
+            } else {
+                $cadastroveiculos = CadastroVeiculo::where('proprietario', '=', Auth::user()->cpf)
+                        ->orderby('marca', 'desc')
+                        ->orderby('modelo', 'desc')
+                        ->paginate($perPage);
+            }
         }
+
+        
 
         if (!isset($cadastroveiculos))
             $cadastroveiculos = array();
