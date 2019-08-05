@@ -39,9 +39,9 @@
 </div>
 
 <div class="form-group {{ $errors->has('proprietario') ? 'has-error' : ''}}">
-    {!! Form::label('proprietario', 'Proprietário', ['class' => 'col-md-4 control-label']) !!}
+    {!! Form::label('proprietario', 'Proprietário - CPF', ['class' => 'col-md-4 control-label']) !!}
     <div class="col-md-6">
-        {!! Form::text('proprietario', null, ['class' => 'form-control']) !!}
+        {!! Form::text('proprietario', null, ['class' => 'form-control', 'placeholder'=>'Apenas Números']) !!}
         {!! $errors->first('proprietario', '<p class="help-block">:message</p>') !!}
     </div>
 </div>

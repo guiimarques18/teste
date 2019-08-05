@@ -5,9 +5,12 @@ namespace FederalSt\Http\Controllers\Veiculos;
 use FederalSt\Http\Controllers\Controller;
 use App\Http\Requests;
 use FederalSt\Veiculos\CadastroVeiculo;
+use FederalSt\User;
+use FederalSt\Notifications\TemplateEmail;
 use Illuminate\Http\Request;
 use Session;
 use Validator;
+
 
 class CadastroVeiculosController extends Controller {
     /**
@@ -94,6 +97,15 @@ class CadastroVeiculosController extends Controller {
             Session::flash('message', 'Veículo cadastrado com sucesso!');
             Session::flash('alert-class', 'alert-success');
 
+            // $email = CadastroVeiculo::join('users', 'users.cpf', '=', 'cadastro_veiculos.proprietario')
+            //     ->select('email')
+            //     ->where('cadastro_veiculos.id', '=', $id)
+            //     ->value('email');
+
+            // $user = new User();
+            // $user->email = $email;
+            // $user->notify(new TemplateEmail());
+
             return redirect('veiculo');
         } catch (\Illuminate\Database\QueryException $e) {
             Session::flash('message', 'Erro ao cadastrar veículo: ' . $e);
@@ -151,15 +163,31 @@ class CadastroVeiculosController extends Controller {
             'ano' => 'required|numeric',
             'proprietario' => 'required|string',
         ]);
-
+        
         $requestData = $request->all();
 
+        if (!validar_cpf($requestData['proprietario'])) {
+            return redirect('veiculo/'.$id.'/edit')
+                ->withErrors("CPF inválido")
+                ->withInput();
+        }
+
+    
         try {
             $cadastroveiculo = CadastroVeiculo::findOrFail($id);
             $cadastroveiculo->update($requestData);
 
             Session::flash('message', 'Veículo atualizado com sucesso!');
             Session::flash('alert-class', 'alert-success');
+
+            // $email = CadastroVeiculo::join('users', 'users.cpf', '=', 'cadastro_veiculos.proprietario')
+            //     ->select('email')
+            //     ->where('cadastro_veiculos.id', '=', $id)
+            //     ->value('email');
+
+            // $user = new User();
+            // $user->email = $email;
+            // $user->notify(new TemplateEmail());
 
             return redirect('veiculo');
         } catch (\Illuminate\Database\QueryException $e) {
