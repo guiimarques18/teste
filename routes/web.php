@@ -18,6 +18,8 @@ Route::get('/', function () {
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::resource('/veiculo', 'Veiculos\\CadastroVeiculosController');
+
 Route::group(['prefix'=>'admin', 'as'=>'admin.'],function(){
     //Authentication Rotes
     $this->get('login','Auth\LoginController@showLoginForm')->name('login');

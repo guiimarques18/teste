@@ -1,0 +1,196 @@
+<?php
+
+namespace FederalSt\Http\Controllers\Veiculos;
+
+use FederalSt\Http\Controllers\Controller;
+use App\Http\Requests;
+use FederalSt\Veiculos\CadastroVeiculo;
+use Illuminate\Http\Request;
+use Session;
+use Validator;
+
+class CadastroVeiculosController extends Controller {
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct() {
+        $this->middleware('auth');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function index(Request $request) {
+        /**
+         * Verifica se o usuario tem permissao para acessar
+         */
+        // $this->authorize('view', $cadastrop);
+
+        // echo "oi";
+
+        $keyword = $request->get('search');
+        $perPage = 15;
+
+        if (!empty($keyword)) {
+            $cadastroveiculos = CadastroVeiculo::where('placa', 'ILIKE', "%$keyword%")
+                    ->orWhere('renavam', '=', "$keyword")
+                    ->orWhere('modelo', 'ILIKE', "%$keyword%")
+                    ->orWhere('marca', 'ILIKE', "%$keyword%")
+                    ->orWhere('ano', '=', "$keyword")
+                    ->orWhere('proprietario', 'ILIKE', "%$keyword%")
+                    ->orderby('marca', 'desc')
+                    ->orderby('modelo', 'desc')
+                    ->paginate($perPage);
+        } else {
+            $cadastroveiculos = CadastroVeiculo::orderby('marca', 'desc')
+                    ->orderby('modelo', 'desc')
+                    ->paginate($perPage);
+        }
+
+        if (!isset($cadastroveiculos))
+            $cadastroveiculos = array();
+            
+        return view('veiculos.cadastro-veiculo.index', compact('cadastroveiculos'));
+    }
+/**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function create() {
+        /**
+         * Verifica se o usu�rio tem permiss�o para acessar
+         */
+        // $this->authorize('create', $cadastrop);
+
+        return view('veiculos.cadastro-veiculo.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function store(Request $request) {
+    
+        $cadastro = new CadastroVeiculo;
+
+        $requestData = $request->all();
+        $validator = Validator::make($requestData,$cadastro->rules);
+        if ($validator->fails()) {
+            return redirect('veiculo/create')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        try {
+            CadastroVeiculo::create($requestData);
+
+            Session::flash('message', 'Veículo cadastrado com sucesso!');
+            Session::flash('alert-class', 'alert-success');
+
+            return redirect('veiculo');
+        } catch (\Illuminate\Database\QueryException $e) {
+            Session::flash('message', 'Erro ao cadastrar veículo: ' . $e);
+            Session::flash('alert-class', 'alert-danger');
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     *
+     * @return \Illuminate\View\View
+     */
+    public function show($id) {
+        $cadastroveiculo = CadastroVeiculo::findOrFail($id);
+
+        return view('veiculos.cadastro-veiculo.show', compact('cadastroveiculo'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     *
+     * @return \Illuminate\View\View
+     */
+    public function edit($id) {
+        /**
+         * Verifica se o usuario tem permissao para acessar
+         */
+        // $this->authorize('edit', $cadastrop);
+
+        $cadastroveiculo = CadastroVeiculo::select('*')
+                ->findOrFail($id);
+
+        return view('veiculos.cadastro-veiculo.edit', compact('cadastroveiculo'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function update($id, Request $request) {
+
+        $this->validate($request, [
+            'placa' => 'required|string',
+            'renavam' => 'required|numeric',
+            'modelo' => 'required|string',
+            'marca' => 'required|string',
+            'ano' => 'required|numeric',
+            'proprietario' => 'required|string',
+        ]);
+
+        $requestData = $request->all();
+
+        try {
+            $cadastroveiculo = CadastroVeiculo::findOrFail($id);
+            $cadastroveiculo->update($requestData);
+
+            Session::flash('message', 'Veículo atualizado com sucesso!');
+            Session::flash('alert-class', 'alert-success');
+
+            return redirect('veiculo');
+        } catch (\Illuminate\Database\QueryException $e) {
+            Session::flash('message', 'Erro ao atualizar veículo: ' . $e);
+            Session::flash('alert-class', 'alert-danger');
+
+            return redirect('veiculo')->with('status', 'Falha ao atualizar o Veículo #' . $id);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     *
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function destroy($id) {
+        /**
+         * Verifica se o usuario tem permissao para acessar
+         */
+        // $this->authorize('delete', $cadastrop);
+        
+        if(CadastroVeiculo::destroy($id)) {
+            Session::flash('flash_message', 'Veículo Excluído!');
+            return redirect('veiculo')->with('status', 'Processo #'.$id.' excluído.');
+        } else {
+            return redirect('veiculo')
+                            ->withErrors("Falha na exclus&atilde;o!");
+        }
+    }
+
+}
