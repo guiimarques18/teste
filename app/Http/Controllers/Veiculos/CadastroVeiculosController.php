@@ -225,7 +225,7 @@ class CadastroVeiculosController extends Controller {
             Session::flash('message', 'Veículo excluído com sucesso!');
             Session::flash('alert-class', 'alert-success');
 
-            return redirect('veiculo')->with('status', 'Processo #'.$id.' excluído.');
+            return redirect('veiculo')->with('status', '#'.$id.' excluído.');
         } else {
             Session::flash('message', 'Erro ao excluir veículo: ' . $e);
             Session::flash('alert-class', 'alert-danger');

@@ -6,7 +6,7 @@
 
             <div class="col-md-12">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Editar Cadastro Processo Seletivo - <b>#{{ $cadastroveiculo->placa }}</b></div>
+                    <div class="panel-heading">Editar Cadastro - <b>#{{ $cadastroveiculo->placa }}</b></div>
                     <div class="panel-body">
                         <a href="{{ url('/veiculo') }}" title="Voltar"><button class="btn btn-warning btn-xs"><i class="glyphicon glyphicon-arrow-left" aria-hidden="true"></i> Voltar</button></a>
                         <br />

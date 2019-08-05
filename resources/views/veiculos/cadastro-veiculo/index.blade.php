@@ -8,7 +8,7 @@
                 <div class="panel panel-primary">
                     <div class="panel-heading">Cadastro de Veículos</div>
                     <div class="panel-body">
-                        <a href="{{ url('/veiculo/create') }}" class="btn btn-success btn-sm" title="Criar novo PS">
+                        <a href="{{ url('/veiculo/create') }}" class="btn btn-success btn-sm" title="Criar novo">
                             <i class="glyphicon glyphicon-plus" aria-hidden="true"></i> Criar novo Carro
                         </a>
 
@@ -56,8 +56,7 @@
                                         <td>{{ date("d/m/Y H:i:s", strtotime($item->updated_at)) }}</td>    
                                         @if (Auth::user()->role == 2)
                                         <td>
-                                            <!-- <a href="{{ url('/processo_seletivo/cadastro-ps/' . $item->id) }}" title="View CadastroP"><button class="btn btn-info btn-xs"><i class="glyphicon glyphicon-eye-open" aria-hidden="true"></i> Visualizar</button></a> -->
-                                            <a href="{{ url('/veiculo/' . $item->id . '/edit') }}" title="Edit CadastroP"><button class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i> Editar</button></a>
+                                            <a href="{{ url('/veiculo/' . $item->id . '/edit') }}" title="Editar Cadastro"><button class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-pencil" aria-hidden="true"></i> Editar</button></a>
                                             
                                             {!! Form::open([
                                                 'method'=>'DELETE',
@@ -67,7 +66,7 @@
                                                 {!! Form::button('<i class="glyphicon glyphicon-trash" aria-hidden="true"></i> Excluir', array(
                                                         'type' => 'submit',
                                                         'class' => 'btn btn-danger btn-xs',
-                                                        'title' => 'Excluir CadastroPS',
+                                                        'title' => 'Excluir Cadastro',
                                                         'onclick'=>'return confirm("Confirma a exclus&atilde;o?")'
                                                 )) !!}
                                             {!! Form::close() !!}
