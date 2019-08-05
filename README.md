@@ -5,6 +5,18 @@
 
 Esse é o teste prático - Federal Soluções Técnicas
 
+# Como executar o projeto
+- Para rodar o projeto, baixe-o para sua máquina, configurada com PHP 7>, execute os comandos:
+
+    - composer update
+    - php artisan cache:clear
+    - php artisan config:cache
+    - migrations e seeders conforme orientação do próprio projeto inicial
+
+- Configure o arquivo .env com as configurações locais de sua máquina, de acesso ao Banco de Dados e E-mail.
+
+- Para que seja executada a feature de notificação por e-mail, é necessário configurar um envio de e-mail válido no .env e descomentar as linhas 110 a 117 do método store no app/HTTP/Controllers/Veiculos/CadastroVeiculosController.php. E também as linhas 193 a 200 do método update no mesmo arquivo de controller.
+
 # Objetivos
   - Conhecer as habilidades em:
     - Programação PHP/Laravel (Conhecimentos básicos sobre Laravel)
